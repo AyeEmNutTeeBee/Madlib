@@ -1,36 +1,55 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import Input from './input';
 import Content from './content';
+
+const INITIAL_STATE = {
+    worstEnemy: '',
+    region: '',
+    color: '',
+    pluralNoun: '',
+    exclamation: '',
+    nonLethal: '',
+    noun: '',
+    bodyPart: '',
+    superhero: '',
+    celeb: '',
+    adjective: '',
+    mood: '',
+    contentVisible: false
+
+}
 
 class Card extends Component {
 
     constructor() {
         super()
 
-        this.state = {
-            worstEnemy: '',
-            region: '',
-            color: 'BLUE',
-            pluralNoun: '',
-            exclamation: '',
-            nonLethal: '',
-            noun: '',
-            bodyPart: '',
-            superhero: '',
-            celeb: '',
-            adjective: '',
-            mood: ''
-
-        }
+        this.state = INITIAL_STATE
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
 
     handleInputChange(event) {
         //console.log('this is the value', event.target.value);
         this.setState({ [event.target.name]: event.target.value})
-        console.log(this.state);
+        console.alert(this.state);
+    }
+
+    handleFormSubmit(event) {
+        console.log("Attempting submitting process...");
+        event.preventDefault()
+
+        if(this.state.contentVisible) {
+            this.setState(INITIAL_STATE)
+
+            console.log("Content has been successfully cleared.")
+        } else {
+            console.log("Content has been successfully submited")
+        }
+
+        this.setState({ contentVisible: !this.state.contentVisible })
     }
 
 
@@ -53,14 +72,21 @@ class Card extends Component {
         ]
 
         return (
-            <div className="card">
-                <h1>{this.state.color}</h1>
+            <form onSubmit={this.handleFormSubmit} className="card">
+                <div className="card__inputs">
                 {
                     //inputData.map(data => Input(data.title, data.state, this.handleInputChange, data.name))
-                    inputData.map(data => Input( (data), this.handleInputChange ))
+                    inputData.map((data, index) => {
+                        return Input( (data), this.handleInputChange, index)
+                    })
+                }
+                </div>
+                <button type="submit">{!this.state.contentVisible ? 'Show MadLib' : 'Clear MadLib'}</button>
+                {
+                    this.state.contentVisible ? <Content data={this.state}/> : ''
+                    
                 }
 
-                <Content data={this.state}/>
                 {/*
 
                     inputData.map((data, index )=> {
@@ -82,7 +108,7 @@ class Card extends Component {
                 { Input('Adjective', this.state.adjective, this.handleInputChange, 'adjective')}
                 { Input('Mood', this.state.mood, this.handleInputChange, 'mood')}*/}
             
-            </div>
+            </form>
         )
     }
 }
